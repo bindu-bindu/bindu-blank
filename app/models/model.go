@@ -3,7 +3,7 @@ package models
 import "time"
 
 // DefaultProperties Auto gen ID Primary, CreatedAt, UpdatedAt, DeletedAt Property
-type DefaultProperties struct {
+type defaultProperties struct {
 	ID        uint64 `gorm:"primary_key" json:"-"`
 	CreatedAt time.Time
 	UpdatedAt time.Time  `json:"-"`

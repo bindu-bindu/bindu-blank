@@ -12,6 +12,7 @@ var DB *gorm.DB
 var err error
 
 func Con() {
+	bindu.Init()
 	adapter := bindu.DbStr.DB_ADAPTER
 	host := bindu.DbStr.DB_HOST
 	port := bindu.DbStr.DB_PORT
@@ -32,10 +33,10 @@ func Con() {
 		fmt.Println("statuse: ", err)
 	}
 
-	// pingErr := DB.DB().Ping()
-	// if pingErr != nil {
-	// 	fmt.Println(pingErr)
-	// } else {
-	// 	fmt.Println("Connected")
-	// }
+	pingErr := DB.DB().Ping()
+	if pingErr != nil {
+		fmt.Println(pingErr)
+	} else {
+		fmt.Println("Connected")
+	}
 }
