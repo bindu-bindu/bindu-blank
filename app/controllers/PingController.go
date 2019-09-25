@@ -8,13 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//
-// @Summary Ping a test api
-// @Description get string
-// @Accept  json
-// @Produce  json
-// @Success 200 {string} string	"ok"
-// @Router /ping [get]
 func Ping(c *gin.Context) {
 
 	pingErr := db.DB.DB().Ping()
