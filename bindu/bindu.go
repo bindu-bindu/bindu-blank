@@ -3,6 +3,7 @@ package bindu
 import (
 	"log"
 	"os"
+	"regexp"
 
 	"github.com/joho/godotenv"
 )
@@ -31,4 +32,16 @@ type DbConString struct {
 	DB_DATABASE string
 	DB_USERNAME string
 	DB_PASSWORD string
+}
+
+var (
+	emailRegexp = regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+)
+
+// IsValidEmailFormat Email invalid formate checker
+func IsValidEmailFormat(email string) bool {
+	if !emailRegexp.MatchString(email) {
+		return false
+	}
+	return true
 }
