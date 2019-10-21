@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/bindu-bindu/bindu-blank/app/controllers"
-	"github.com/bindu-bindu/bindu/World/app/middlewares"
+	"github.com/bindu-bindu/bindu-blank/app/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
