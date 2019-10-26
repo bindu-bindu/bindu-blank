@@ -15,11 +15,7 @@ import (
 func GinJwtMiddlewareHandler() *jwt.GinJWTMiddleware {
 	var identityKey = "id"
 	// the jwt middleware
-	type User struct {
-		Username  string
-		FirstName string
-		LastName  string
-	}
+
 	authMiddleware, err := jwt.New(&jwt.GinJWTMiddleware{
 		Realm:       "test zone",
 		Key:         []byte("secret key"),
@@ -27,7 +23,7 @@ func GinJwtMiddlewareHandler() *jwt.GinJWTMiddleware {
 		MaxRefresh:  time.Hour,
 		IdentityKey: identityKey,
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
-			if v, ok := data.(*User); ok {
+			if v, ok := data.(*models.User); ok {
 				return jwt.MapClaims{
 					identityKey: v.Username,
 				}
@@ -36,7 +32,7 @@ func GinJwtMiddlewareHandler() *jwt.GinJWTMiddleware {
 		},
 		IdentityHandler: func(c *gin.Context) interface{} {
 			claims := jwt.ExtractClaims(c)
-			return &User{
+			return &models.User{
 				Username: claims[identityKey].(string),
 			}
 		},
@@ -61,7 +57,7 @@ func GinJwtMiddlewareHandler() *jwt.GinJWTMiddleware {
 			return nil, jwt.ErrFailedAuthentication
 		},
 		Authorizator: func(data interface{}, c *gin.Context) bool {
-			if v, ok := data.(*User); ok && v.Username == "admin" {
+			if v, ok := data.(*models.User); ok && v.Username == "admin" {
 				return true
 			}
 
@@ -69,8 +65,8 @@ func GinJwtMiddlewareHandler() *jwt.GinJWTMiddleware {
 		},
 		Unauthorized: func(c *gin.Context, code int, message string) {
 			c.JSON(code, gin.H{
-				"code":    code,
-				"message": message,
+				"Code":    code,
+				"Message": message,
 			})
 		},
 		// TokenLookup is a string in the form of "<source>:<name>" that is used
