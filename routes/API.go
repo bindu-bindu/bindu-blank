@@ -9,7 +9,8 @@ import (
 // API REST ROUTES
 func API(r *gin.Engine) *gin.Engine {
 	r.Use(middlewares.Cors())
-	r.GET("/ping", controllers.Ping)
+	r.POST("/login", middlewares.GinJwtMiddlewareHandler().LoginHandler)
+	r.POST("/register", controllers.Registration)
 
 	return r
 }
