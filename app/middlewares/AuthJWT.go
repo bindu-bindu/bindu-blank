@@ -16,7 +16,7 @@ func GinJwtMiddlewareHandler() *jwt.GinJWTMiddleware {
 	var identityKey = "id"
 	// the jwt middleware
 	type User struct {
-		UserName  string
+		Username  string
 		FirstName string
 		LastName  string
 	}
@@ -29,7 +29,7 @@ func GinJwtMiddlewareHandler() *jwt.GinJWTMiddleware {
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
 			if v, ok := data.(*User); ok {
 				return jwt.MapClaims{
-					identityKey: v.UserName,
+					identityKey: v.Username,
 				}
 			}
 			return jwt.MapClaims{}
@@ -37,11 +37,11 @@ func GinJwtMiddlewareHandler() *jwt.GinJWTMiddleware {
 		IdentityHandler: func(c *gin.Context) interface{} {
 			claims := jwt.ExtractClaims(c)
 			return &User{
-				UserName: claims[identityKey].(string),
+				Username: claims[identityKey].(string),
 			}
 		},
 		Authenticator: func(c *gin.Context) (interface{}, error) {
-			var loginVals models.Login
+			var loginVals models.User
 			if err := c.ShouldBind(&loginVals); err != nil {
 				return "", jwt.ErrMissingLoginValues
 			}
@@ -55,17 +55,13 @@ func GinJwtMiddlewareHandler() *jwt.GinJWTMiddleware {
 				fmt.Println(err)
 			} else {
 				if userID == loginVals.Username && password == loginVals.Password {
-					return &User{
-						UserName:  userID,
-						LastName:  "Bo-Yi",
-						FirstName: "Wu",
-					}, nil
+					return loginVals, nil
 				}
 			}
 			return nil, jwt.ErrFailedAuthentication
 		},
 		Authorizator: func(data interface{}, c *gin.Context) bool {
-			if v, ok := data.(*User); ok && v.UserName == "admin" {
+			if v, ok := data.(*User); ok && v.Username == "admin" {
 				return true
 			}
 
