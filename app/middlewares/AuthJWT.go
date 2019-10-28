@@ -33,10 +33,11 @@ func GinJwtMiddlewareHandler() *jwt.GinJWTMiddleware {
 		IdentityHandler: func(c *gin.Context) interface{} {
 			claims := jwt.ExtractClaims(c)
 			return &models.User{
-				Username: claims[identityKey].(string),
+				Username: fmt.Sprintf("%v", claims[identityKey]),
 			}
 		},
 		Authenticator: func(c *gin.Context) (interface{}, error) {
+			// Only login will fire here
 			var loginVals models.User
 			if err := c.ShouldBind(&loginVals); err != nil {
 				return "", jwt.ErrMissingLoginValues
@@ -50,18 +51,42 @@ func GinJwtMiddlewareHandler() *jwt.GinJWTMiddleware {
 				c.AbortWithStatus(401)
 				fmt.Println(err)
 			} else {
+				// fmt.Println(loginVals)
 				if userID == loginVals.Username && password == loginVals.Password {
-					return loginVals, nil
+					return &loginVals, nil
 				}
 			}
 			return nil, jwt.ErrFailedAuthentication
 		},
 		Authorizator: func(data interface{}, c *gin.Context) bool {
 			// if v, ok := data.(*models.User); ok && v.Username == "admin" {
-			return true
-			// }
+			var user models.User
+			v, ok := data.(*models.User)
+			if ok {
+				var db = db.DB
+				if err := db.Where("username=?", v.Username).Find(&user).Limit(1).Error; err != nil {
+					c.AbortWithStatus(401)
+					fmt.Println(err)
+					return false
+				}
+				// adapter, _ := gormadapter.NewAdapterByDB(db)
 
-			// return false
+				// e, _ := casbin.NewEnforcer("middlewares/auth_model.conf", adapter)
+
+				// Load policies from DB dynamically
+				// _ = e.LoadPolicy()
+				// fmt.Println(e)
+				// if err != nil {
+				// 	return false, fmt.Errorf("failed to create casbin enforcer: %w", e)
+				// }
+
+				// ok := e.Enforce(sub, obj, act)
+				// fmt.Println(ok)
+				// return ok, err
+
+				return true
+			}
+			return false
 		},
 		Unauthorized: func(c *gin.Context, code int, message string) {
 			c.JSON(code, gin.H{
