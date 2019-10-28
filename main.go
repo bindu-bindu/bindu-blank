@@ -13,6 +13,7 @@ func main() {
 
 	bindu.Init()
 	db.Con()
+
 	r := gin.Default()
 	r = routes.API(r)
 

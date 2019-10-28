@@ -57,11 +57,11 @@ func GinJwtMiddlewareHandler() *jwt.GinJWTMiddleware {
 			return nil, jwt.ErrFailedAuthentication
 		},
 		Authorizator: func(data interface{}, c *gin.Context) bool {
-			if v, ok := data.(*models.User); ok && v.Username == "admin" {
-				return true
-			}
+			// if v, ok := data.(*models.User); ok && v.Username == "admin" {
+			return true
+			// }
 
-			return false
+			// return false
 		},
 		Unauthorized: func(c *gin.Context, code int, message string) {
 			c.JSON(code, gin.H{
