@@ -8,6 +8,8 @@ import (
 	jwt "github.com/appleboy/gin-jwt"
 	"github.com/bindu-bindu/bindu-blank/app/models"
 	"github.com/bindu-bindu/bindu-blank/db"
+	"github.com/casbin/casbin"
+	gormadapter "github.com/casbin/gorm-adapter"
 	"github.com/gin-gonic/gin"
 )
 
@@ -69,22 +71,34 @@ func GinJwtMiddlewareHandler() *jwt.GinJWTMiddleware {
 					fmt.Println(err)
 					return false
 				}
-				// adapter, _ := gormadapter.NewAdapterByDB(db)
-
-				// e, _ := casbin.NewEnforcer("middlewares/auth_model.conf", adapter)
-
+				adapter, _ := gormadapter.NewAdapterByDB(db)
+				// fmt.Println(adapter)
+				// e, err := casbin.NewEnforcer("app/middlewares/auth_model.conf", "app/middlewares/policy.csv")
+				e, err := casbin.NewEnforcer("app/middlewares/auth_model.conf", adapter)
+				if err != nil {
+					fmt.Println("Not logged in!")
+					return false
+				}
 				// Load policies from DB dynamically
-				// _ = e.LoadPolicy()
-				// fmt.Println(e)
-				// if err != nil {
-				// 	return false, fmt.Errorf("failed to create casbin enforcer: %w", e)
-				// }
-
-				// ok := e.Enforce(sub, obj, act)
-				// fmt.Println(ok)
+				err = e.LoadPolicy()
+				if err != nil {
+					fmt.Println("No policy found!")
+					return false
+				}
+				obj := fmt.Sprintf("%v", c.Request.URL)
+				sub := user.Role
+				act := c.Request.Method
+				// err := e.LoadPolicy()
+				// fmt.Println(err)
+				ok, _ := e.Enforce(sub, obj, act)
 				// return ok, err
-
+				if !ok {
+					// fmt.Println("!!!You are not authorize for this action!!!")
+					// fmt.Println(err)
+					return false
+				}
 				return true
+
 			}
 			return false
 		},
