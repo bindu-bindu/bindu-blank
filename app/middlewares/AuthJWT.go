@@ -5,11 +5,11 @@ import (
 	"log"
 	"time"
 
-	jwt "github.com/appleboy/gin-jwt"
+	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/bindu-bindu/bindu-blank/app/models"
 	"github.com/bindu-bindu/bindu-blank/db"
-	"github.com/casbin/casbin"
-	gormadapter "github.com/casbin/gorm-adapter"
+	"github.com/casbin/casbin/v2"
+	gormadapter "github.com/casbin/gorm-adapter/v2"
 	"github.com/gin-gonic/gin"
 )
 

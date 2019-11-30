@@ -3,7 +3,7 @@ package routes
 import (
 	"log"
 
-	jwt "github.com/appleboy/gin-jwt"
+	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/bindu-bindu/bindu-blank/app/controllers"
 	"github.com/bindu-bindu/bindu-blank/app/middlewares"
 	"github.com/gin-gonic/gin"
