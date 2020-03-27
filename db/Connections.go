@@ -30,6 +30,8 @@ func Con() {
 
 	// fmt.Println(bindu.DbStr)
 	if err != nil {
+
+		fmt.Println("Connection Failed")
 		fmt.Println("statuse: ", err)
 	}
 
